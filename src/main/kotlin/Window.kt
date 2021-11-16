@@ -6,10 +6,10 @@ import com.sun.jna.platform.win32.User32
 import com.sun.jna.platform.win32.WinDef
 import javax.swing.tree.TreePath
 
-data class Window (val handle : WinDef.HWND, val title :String, val parent : Window? = null) {
+data class Window (val hwnd : WinDef.HWND, val title :String, val parent : Window? = null) {
     private val childs = mutableListOf<Window>()
 
-    override fun hashCode(): Int = handle.hashCode()
+    override fun hashCode(): Int = hwnd.hashCode()
     override fun toString(): String = title.ifBlank { "<empty>" }
     fun indexOf(child : Window) :Int = childs.indexOf(child)
     fun count() = childs.size
@@ -28,9 +28,9 @@ data class Window (val handle : WinDef.HWND, val title :String, val parent : Win
 
     fun update() {
         childs.clear()
-        if (parent != null) {
-            User32.INSTANCE.EnumChildWindows(handle, { handle, _ ->
-                childs.add(Window(handle, WindowUtils.getWindowTitle(handle), this))
+        if (hwnd != WinDef.HWND(Pointer.NULL)) {
+            User32.INSTANCE.EnumChildWindows(hwnd, { h, _ ->
+                childs.add(Window(h, WindowUtils.getWindowTitle(h), this))
                 true
             }, null)
         } else {
@@ -44,7 +44,7 @@ data class Window (val handle : WinDef.HWND, val title :String, val parent : Win
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
         other as Window
-        if (handle != other.handle) return false
+        if (hwnd != other.hwnd) return false
         return true
     }
 }

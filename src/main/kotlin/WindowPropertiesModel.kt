@@ -49,12 +49,12 @@ class WindowPropertiesModel : TableModel {
 
     fun update(window :Window) {
         for (i in rowValues.indices) rowValues[i] = ""
-        if (window.handle != WinDef.HWND(Pointer.NULL)) {
+        if (window.hwnd != WinDef.HWND(Pointer.NULL)) {
             rowValues[0] = window.title
-            rowValues[1] = window.handle.toString().split("@")[1]
-            rowValues[2] = getWindowClassName(window.handle)
+            rowValues[1] = window.hwnd.toString().split("@")[1]
+            rowValues[2] = getWindowClassName(window.hwnd)
 
-            with (WindowUtils.getWindowLocationAndSize(window.handle)) {
+            with (WindowUtils.getWindowLocationAndSize(window.hwnd)) {
                 rowValues[3] = width.toString()
                 rowValues[4] = height.toString()
                 rowValues[5] = x.toString()

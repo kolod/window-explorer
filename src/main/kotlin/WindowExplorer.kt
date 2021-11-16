@@ -1,11 +1,9 @@
 package io.github.kolod
 
-import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLightLaf
 import com.jcabi.manifests.Manifests
 import org.apache.logging.log4j.LogManager
 import java.awt.*
-import java.io.IOException
 import java.util.*
 import javax.swing.*
 
@@ -20,22 +18,6 @@ class WindowExplorer : JFrame() {
     private val windowsTree = JTree(windowsModel)
     private val properties = JTable(propertiesModel)
 
-    @Suppress("SameParameterValue")
-    private fun fontFromResource(name: String, defaultFont: Font? = null): Font? = try {
-        Font.createFont(Font.TRUETYPE_FONT, this.javaClass.getResourceAsStream(name))
-    } catch (ex: FontFormatException) {
-        logger.error("Can't load font", ex)
-        defaultFont
-    } catch (ex: IOException) {
-        logger.error("Can't load font", ex)
-        defaultFont
-    }
-
-    private fun setCustomFont(font: Font) {
-        UIManager.put("defaultFont", font)
-        getWindows().forEach { window -> SwingUtilities.updateComponentTreeUI(window) }
-    }
-
     private fun translateUI() {
         with (bundle) {
             title             = getString("title") + " " + Manifests.read("Build-Date")
@@ -46,8 +28,7 @@ class WindowExplorer : JFrame() {
     private fun initComponents() {
         preferredSize = Dimension(800, 600)
         defaultCloseOperation = EXIT_ON_CLOSE
-        iconImage = Toolkit.getDefaultToolkit().getImage(javaClass.classLoader.getResource("io/github/kolod/icon.png"))
-        setCustomFont(fontFromResource("FiraCode-Regular.ttf", font)!!.deriveFont(12.0f))
+        iconImage = Toolkit.getDefaultToolkit().getImage(javaClass.classLoader.getResource("icon.png"))
 
         val windowsTreePane = JScrollPane(windowsTree)
         val propertiesPane = JScrollPane(properties)
@@ -83,7 +64,6 @@ class WindowExplorer : JFrame() {
         updateButton.addActionListener { windowsModel.update() }
 
         windowsTree.addTreeSelectionListener { event ->
-            logger.debug("listener")
             val window = event.path.lastPathComponent
             if (window is Window) propertiesModel.update(window)
         }
@@ -96,7 +76,6 @@ class WindowExplorer : JFrame() {
         @JvmStatic
         fun main(args: Array<String>) {
             FlatLightLaf.setup()
-            //FlatDarkLaf.setup()
             SwingUtilities.invokeLater { WindowExplorer().isVisible = true }
         }
     }
