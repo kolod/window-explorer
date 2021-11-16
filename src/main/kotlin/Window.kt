@@ -28,7 +28,7 @@ data class Window (val handle : WinDef.HWND, val title :String, val parent : Win
 
     fun update() {
         childs.clear()
-        if ((parent != null) && (parent.handle != WinDef.HWND(Pointer.NULL))) {
+        if (parent != null) {
             User32.INSTANCE.EnumChildWindows(handle, { handle, _ ->
                 childs.add(Window(handle, WindowUtils.getWindowTitle(handle), this))
                 true

@@ -26,9 +26,7 @@ class WindowTreeModel : TreeModel {
      *
      * @return  the root of the tree
      */
-    override fun getRoot(): Any {
-        return Window(WinDef.HWND(Pointer.NULL), "Windows")
-    }
+    override fun getRoot(): Any = Window(WinDef.HWND(Pointer.NULL), "Windows")
 
     /**
      * Returns the child of `parent` at index `index`
@@ -66,12 +64,11 @@ class WindowTreeModel : TreeModel {
      * @param   node  a node in the tree, obtained from this data source
      * @return  true if `node` is a leaf
      */
-    override fun isLeaf(node: Any?): Boolean {
+    override fun isLeaf(node: Any?): Boolean =
         if (node is Window) {
             node.update()
-            return node.isEmpty()
-        }
-        return true
+            node.isEmpty()
+        } else true
     }
 
     /**
