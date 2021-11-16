@@ -69,7 +69,6 @@ class WindowTreeModel : TreeModel {
             node.update()
             node.isEmpty()
         } else true
-    }
 
     /**
      * Messaged when the user has altered the value for the item identified
