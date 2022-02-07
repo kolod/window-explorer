@@ -5,45 +5,43 @@ import java.util.Date
 
 plugins {
     application
-    kotlin(Kotlin.jvmId) version Kotlin.version
-    kotlin(Kotlin.kaptId) version Kotlin.version
-    shadow(Shadow.id) version Shadow.version
+    kotlin("jvm") version "1.6.10"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-project.ext {
-    set("mainClassName", "io.github.kolod.WindowExplorer")
-}
+val main = "io.github.kolod.WindowExplorer"
 
 version = SimpleDateFormat("yy.M.d").format(Date())
 
 repositories {
     mavenCentral()
+	mavenLocal()
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(Kotlin.stdlibJdk8)
-    implementation(Logger.core)
-    implementation(Logger.api)
-    implementation(Logger.slf4j)
-    implementation(Manifests.core)
-    implementation(JNA.core)
-    implementation(JNA.platform)
-    implementation(FlatLookAndFeel.core)
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.10")
+    implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+	implementation("org.apache.logging.log4j:log4j-api:2.17.1")
+	implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
+	implementation("net.java.dev.jna:jna:5.10.0")
+	implementation("net.java.dev.jna:jna-platform:5.10.0")
+    implementation("com.jcabi:jcabi-manifests:1.1")
+    implementation("com.formdev:flatlaf:2.0.1")
 }
 
 application {
-    mainClass.set(project.ext["mainClassName"] as String)
+    mainClass.set(main)
 }
 
 tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = Jvm.version
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 tasks.withType<ShadowJar> {
     manifest {
         attributes["Implementation-Title"] = "WindowExplorer"
-        attributes["Main-Class"] = project.ext["mainClassName"] as String
+        attributes["Main-Class"] = main
         attributes["Author"] = "Oleksandr Kolodkin"
         attributes["Created-By"] = "Gradle ${gradle.gradleVersion}"
         attributes["Multi-Release"] = "true"
